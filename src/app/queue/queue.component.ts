@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -41,15 +42,12 @@ export class QueueComponent implements OnInit {
 
   add(search: string) {
     // tslint:disable-next-line: max-line-length
-    const secret = '-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg67Q6fjQUSSFT1qER\neFZuL16WrnIWgBi4zazFjMUyWG+gCgYIKoZIzj0DAQehRANCAARva/RzREDKokkK\n6p8gibcsw+jf1IkhY1luThWC/irbz2R4LiC6jA4vLaE1BpVRT6teFL1jXPtFQfxl\nqZeGUDK3\n-----END PRIVATE KEY-----';
-    const keyid = 'UDNS67YNJF';
-    const iss = '69835AGEY7';
-    const algorithm = 'ES256';
     const iat = Math.round(new Date().getTime() / 1000);
     const exp = iat + 86400;
-    const headers = {algorithm, keyid};
-    const payload = {iss, iat, exp};
-    this.token = jwt.sign(payload, secret, headers);
+    const info = environment.applemusic;
+    const headers = {algorithm: info.algorithm, keyid: info.keyid};
+    const payload = {iss: info.iss, iat, exp};
+    this.token = jwt.sign(payload, info.secret, headers);
 
     const url = `https://api.music.apple.com/v1/catalog/us/search?term=${search.replace(/ /g, '+')}&limit=1&types=songs`;
     fetch(url, {headers: {
