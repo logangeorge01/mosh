@@ -1,0 +1,17 @@
+<div class="head">
+  <img class="logo" src="favicon.ico"><div class="title">Mosh</div>
+</div>
+<br><br><br>
+<input class="field" style="margin-bottom:4px;" type="text" placeholder="mybama email" [(ngModel)]="email">
+<input class="field" type="text" placeholder="event code" [(ngModel)]="code"><br>
+<input class="btn" type="button" value="join event" (click)="login(email, code)">
+<br>
+<br>
+<br>
+<div class="or">or</div>
+<br>
+<br>
+<input class="field" type="text" placeholder="mybama email" [(ngModel)]="email1"><br>
+<input class="btn" type="button" value="create event" (click)="create(email1)">
+<br><br><br>
+<div class="error">{{fail}}</div>

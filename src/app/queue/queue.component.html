@@ -1,0 +1,28 @@
+<div class="title">{{'Event '+code+' by '+creator}}</div><br><br>
+<div class="btngroup">
+  <input class="btn" style="margin-right:25px" type="button" value="leave event" (click)="leave()">
+  <ng-container>
+    <input *ngIf="checkCreator()" class="btn" type="button" value="cancel event" (click)="cancel()">
+  </ng-container>
+</div>
+<br><br><br>
+
+<div class="btngroup">
+  <input class="field" type="text" placeholder="search" [(ngModel)]="search">
+  <input class="btn" type="button" value="add" (click)="add(search)">
+</div>
+<br><br>
+<div class="songgroup" *ngFor="let song of (songs$ | async)">
+  <div class="votecontainer">
+    <input class="upvote" type="button" value="▲" (click)="upvote(song.id)">
+    <div class="votes">{{song.numvotes}}</div>
+  </div>
+  <img class="art" [src]="song.art">
+  <div class="infocontainer">
+    <div class="name">{{song.name}}</div>
+    <div class="artist">{{song.artist}}</div>
+  </div>
+  <input *ngIf="checkCreator()" class="remove" type="button" value="✕" (click)="remove(song.id)">
+  <br><br>
+</div>
+<br><br><div class="footer"><strong>Mosh</strong> © <a href="https://lagsoftware.com">Lag Software</a></div><br>
