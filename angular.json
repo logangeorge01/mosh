@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "applemusic": {
+    "mosh": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -65,18 +65,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "applemusic:build"
+            "browserTarget": "mosh:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "applemusic:build:production"
+              "browserTarget": "mosh:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "applemusic:build"
+            "browserTarget": "mosh:build"
           }
         },
         "test": {
@@ -113,15 +113,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "applemusic:serve"
+            "devServerTarget": "mosh:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "applemusic:serve:production"
+              "devServerTarget": "mosh:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "applemusic"
+  "defaultProject": "mosh"
 }

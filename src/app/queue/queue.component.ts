@@ -28,7 +28,7 @@ export class QueueComponent implements OnInit {
 
     this.db.collection('events').doc(this.code).get().toPromise().then(event => this.creator = event.data().creator);
 
-    const colref = this.db.collection('events').doc(this.code).collection('songs', ref => ref.orderBy('votes', 'desc'));
+    const colref = this.db.collection('events').doc(this.code).collection('songs', ref => ref.orderBy('numvotes', 'desc'));
     this.songs$ = colref.snapshotChanges().pipe(
       map(docsS => {
         return docsS.map(docS => {
