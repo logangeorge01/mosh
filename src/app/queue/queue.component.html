@@ -8,21 +8,36 @@
 <br><br><br>
 
 <div class="btngroup">
-  <input class="field" type="text" placeholder="search" [(ngModel)]="search">
-  <input class="btn" type="button" value="add" (click)="add(search)">
+  <input class="field" type="text" placeholder="a song name" [(ngModel)]="search">
+  <input class="btn" type="button" value="search" (click)="ssearch(search)">
+</div>
+
+<div class="help">Search for a song, then click or tap to add to queue</div>
+<br>
+<div class="suggestgroup">
+  <ng-container *ngFor="let sug of suggests; index as i">
+    <div class="suggest" [title]="sug.name+'\n'+sug.artist" (click)="add(i)">
+      <img class="sugart" [src]="sug.art">
+      <div class="suginfocontainer">
+        <div class="sugname">{{sug.name}}</div>
+        <div class="sugartist">{{sug.artist}}</div>
+      </div>
+    </div>
+  </ng-container>
 </div>
 <br><br>
+<div class="queue">Queue</div>
 <div class="songgroup" *ngFor="let song of (songs$ | async)">
   <div class="votecontainer">
     <input class="upvote" type="button" value="▲" (click)="upvote(song.id)">
     <div class="votes">{{song.numvotes}}</div>
   </div>
-  <img class="art" [src]="song.art">
-  <div class="infocontainer">
+  <img class="art" [src]="song.art ? song.art : '../favicon.ico'">
+  <div class="infocontainer" [title]="song.name+'\n'+song.artist">
     <div class="name">{{song.name}}</div>
     <div class="artist">{{song.artist}}</div>
   </div>
   <input *ngIf="checkCreator()" class="remove" type="button" value="✕" (click)="remove(song.id)">
   <br><br>
 </div>
-<br><br><div class="footer"><strong>Mosh</strong> © <a href="https://lagsoftware.com">Lag Software</a></div><br>
+<br><br>

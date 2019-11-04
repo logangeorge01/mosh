@@ -15,6 +15,11 @@ import { environment } from '../../environments/environment';
 export class QueueComponent implements OnInit {
   title = 'mosh';
   songs$: Observable<any[]>;
+  suggests: {
+    art: string,
+    name: string,
+    artist: string
+  }[];
   token: string;
   code: string;
   uname: string;
@@ -28,7 +33,8 @@ export class QueueComponent implements OnInit {
 
     this.db.collection('events').doc(this.code).get().toPromise().then(event => this.creator = event.data().creator);
 
-    const colref = this.db.collection('events').doc(this.code).collection('songs', ref => ref.orderBy('numvotes', 'desc'));
+    // tslint:disable-next-line: max-line-length
+    const colref = this.db.collection('events').doc(this.code).collection('songs', ref => ref.orderBy('numvotes', 'desc').orderBy('time', 'asc'));
     this.songs$ = colref.snapshotChanges().pipe(
       map(docsS => {
         return docsS.map(docS => {
@@ -40,7 +46,7 @@ export class QueueComponent implements OnInit {
     );
   }
 
-  add(search: string) {
+  ssearch(search: string) {
     // tslint:disable-next-line: max-line-length
     const iat = Math.round(new Date().getTime() / 1000);
     const exp = iat + 86400;
@@ -49,20 +55,34 @@ export class QueueComponent implements OnInit {
     const payload = {iss: info.iss, iat, exp};
     this.token = jwt.sign(payload, info.secret, headers);
 
-    const url = `https://api.music.apple.com/v1/catalog/us/search?term=${search.replace(/ /g, '+')}&limit=1&types=songs`;
-    fetch(url, {headers: {
+    const url = `https://api.music.apple.com/v1/catalog/us/search?term=${search.replace(/ /g, '+')}&limit=4&types=songs`;
+    Promise.resolve(fetch(url, {headers: {
       Authorization: 'Bearer ' + this.token
     }}).then(res => res.json())
-    .then(res => {
-      const data = res.results.songs.data[0].attributes;
-      this.db.collection('events').doc(this.code).collection('songs').add({
-        art: data.artwork.url.replace('{w}x{h}', '125x125'),
-        name: data.name,
-        artist: data.artistName,
-        votes: [],
-        numvotes: 0
+    .then(r => {
+      // tslint:disable-next-line: max-line-length
+      //this.suggests = [{art: './favicon.ico', artist: 'Peas', name: 'Boom Boom Pow'}, {art: './favicon.ico', artist: 'Young the Giant', name: 'Come a Little Closer'}, {art: './favicon.ico', artist: 'Eminem', name: 'Till I Collapse'}, {art: './favicon.ico', artist: 'Bazzi', name: 'Alone'}];
+      this.suggests = r.results.songs.data.map(obj => {
+        return {
+          art: obj.attributes.artwork.url.replace('{w}x{h}', '125x125'),
+          name: obj.attributes.name,
+          artist: obj.attributes.artistName
+        };
       });
+    }));
+  }
+
+  add(index: number) {
+    //console.log('index', index);
+    this.db.collection('events').doc(this.code).collection('songs').add({
+      art: this.suggests[index].art.replace('{w}x{h}', '125x125'),
+      name: this.suggests[index].name,
+      artist: this.suggests[index].artist,
+      votes: [],
+      numvotes: 0,
+      time: firebase.firestore.FieldValue.serverTimestamp()
     });
+    delete this.suggests;
   }
 
   remove(id: string) {
