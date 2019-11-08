@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as jwt from 'jsonwebtoken';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './queue.component.html',
   styleUrls: ['./queue.component.css']
 })
-export class QueueComponent implements OnInit {
+export class QueueComponent implements OnInit, OnDestroy {
   title = 'mosh';
   songs$: Observable<any[]>;
   suggests: {
@@ -22,14 +23,23 @@ export class QueueComponent implements OnInit {
   }[];
   token: string;
   code: string;
-  uname: string;
-  creator = '';
+  email: string;
+  creator: {
+    name: string,
+    email: string
+  };
+  private subscription: Subscription;
 
-  constructor(private db: AngularFirestore, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private db: AngularFirestore,
+    private router: Router,
+    private route: ActivatedRoute,
+    private auth: AuthService
+  ) { }
 
   ngOnInit() {
     this.code = this.route.snapshot.paramMap.get('code');
-    this.uname = this.route.snapshot.paramMap.get('uname');
+    this.subscription = this.auth.user$.subscribe(usr => this.email = usr.email);
 
     this.db.collection('events').doc(this.code).get().toPromise().then(event => this.creator = event.data().creator);
 
@@ -46,8 +56,11 @@ export class QueueComponent implements OnInit {
     );
   }
 
-  ssearch(search: string) {
-    // tslint:disable-next-line: max-line-length
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  searc(search: string) {
     const iat = Math.round(new Date().getTime() / 1000);
     const exp = iat + 86400;
     const info = environment.applemusic;
@@ -60,8 +73,6 @@ export class QueueComponent implements OnInit {
       Authorization: 'Bearer ' + this.token
     }}).then(res => res.json())
     .then(r => {
-      // tslint:disable-next-line: max-line-length
-      //this.suggests = [{art: './favicon.ico', artist: 'Peas', name: 'Boom Boom Pow'}, {art: './favicon.ico', artist: 'Young the Giant', name: 'Come a Little Closer'}, {art: './favicon.ico', artist: 'Eminem', name: 'Till I Collapse'}, {art: './favicon.ico', artist: 'Bazzi', name: 'Alone'}];
       this.suggests = r.results.songs.data.map(obj => {
         return {
           art: obj.attributes.artwork.url.replace('{w}x{h}', '125x125'),
@@ -72,8 +83,7 @@ export class QueueComponent implements OnInit {
     }));
   }
 
-  add(index: number) {
-    //console.log('index', index);
+  addd(index: number) {
     this.db.collection('events').doc(this.code).collection('songs').add({
       art: this.suggests[index].art.replace('{w}x{h}', '125x125'),
       name: this.suggests[index].name,
@@ -85,33 +95,29 @@ export class QueueComponent implements OnInit {
     delete this.suggests;
   }
 
-  remove(id: string) {
+  remov(id: string) {
     this.db.collection('events').doc(this.code).collection('songs').doc(id).delete();
   }
 
-  upvote(id: string) {
+  upvot(id: string) {
     const docref = this.db.collection('events').doc(this.code).collection('songs').doc(id);
     docref.get().toPromise().then(songS => {
       const votes: string[] = songS.data().votes;
-      if (!votes.includes(this.uname)) {
+      if (!votes.includes(this.email)) {
         docref.update({
-          votes: votes.concat([this.uname]),
+          votes: votes.concat([this.email]),
           numvotes: firebase.firestore.FieldValue.increment(1)
         });
       }
     });
   }
 
-  checkCreator(): boolean {
-    return this.uname === this.creator;
-  }
-
-  cancel() {
+  cance() {
     this.db.collection('events').doc(this.code).delete();
     this.router.navigate(['']);
   }
 
-  leave() {
+  leav() {
     this.router.navigate(['']);
   }
 }

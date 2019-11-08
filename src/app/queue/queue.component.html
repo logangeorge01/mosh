@@ -1,22 +1,22 @@
-<div class="title">{{'Event '+code+' by '+creator}}</div><br><br>
+<div class="title" *ngIf="creator">{{'Event '+code+' by '+creator.name}}</div><br><br>
 <div class="btngroup">
-  <input class="btn" style="margin-right:25px" type="button" value="leave event" (click)="leave()">
-  <ng-container>
-    <input *ngIf="checkCreator()" class="btn" type="button" value="cancel event" (click)="cancel()">
+  <button class="btn" style="margin-right:25px" type="button" (click)="leav()">leave event</button>
+  <ng-container *ngIf="(auth.user$ | async) as usr">
+    <button *ngIf="usr.email === (creator || {email:''}).email" class="btn" type="button" (click)="cance()">cancel event</button>
   </ng-container>
 </div>
 <br><br><br>
 
 <div class="btngroup">
-  <input class="field" type="text" placeholder="a song name" [(ngModel)]="search">
-  <input class="btn" type="button" value="search" (click)="ssearch(search)">
+  <input class="field" type="text" placeholder="a song name" [(ngModel)]="searchh">
+  <button class="btn" type="button" (click)="searc(searchh)">search</button>
 </div>
 
 <div class="help">Search for a song, then click or tap to add to queue</div>
 <br>
 <div class="suggestgroup">
   <ng-container *ngFor="let sug of suggests; index as i">
-    <div class="suggest" [title]="sug.name+'\n'+sug.artist" (click)="add(i)">
+    <div class="suggest" [title]="sug.name+'\n'+sug.artist" (click)="addd(i)">
       <img class="sugart" [src]="sug.art">
       <div class="suginfocontainer">
         <div class="sugname">{{sug.name}}</div>
@@ -29,7 +29,7 @@
 <div class="queue">Queue</div>
 <div class="songgroup" *ngFor="let song of (songs$ | async)">
   <div class="votecontainer">
-    <input class="upvote" type="button" value="▲" (click)="upvote(song.id)">
+    <button class="upvote" type="button" (click)="upvot(song.id)">▲</button>
     <div class="votes">{{song.numvotes}}</div>
   </div>
   <img class="art" [src]="song.art ? song.art : '../favicon.ico'">
@@ -37,7 +37,9 @@
     <div class="name">{{song.name}}</div>
     <div class="artist">{{song.artist}}</div>
   </div>
-  <input *ngIf="checkCreator()" class="remove" type="button" value="✕" (click)="remove(song.id)">
+  <ng-container *ngIf="(auth.user$ | async) as usr">
+    <button *ngIf="usr.email === (creator || {email:''}).email" class="remove" type="button" (click)="remov(song.id)">✕</button>
+  </ng-container>
   <br><br>
 </div>
 <br><br>

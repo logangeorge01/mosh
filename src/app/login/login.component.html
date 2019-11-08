@@ -1,19 +1,22 @@
-<div class="head">
-  <img class="logo" src="favicon.ico"><div class="title">Mosh</div>
+<div>
+  <div class="head">
+    <img class="logo" src="favicon.ico"><div class="title">Mosh</div>
+  </div><br><br><br>
+
+  <input class="field" type="text" placeholder="event code" [(ngModel)]="code"><br>
+  <button class="btn" type="button" (click)="joi(code);$event.stopPropagation()">join event</button><br><br>
+  
+  <div class="or">or</div><br><br>
+
+  <button class="btn" type="button" (click)="creat();$event.stopPropagation()">create event</button><br><br><br>
+  
+  <div class="error">{{fail}}</div><br><br><br><br>
+
+  <ng-container *ngIf="(auth.user$ | async) as usr">
+    <img style="width:70px;display:block;margin:0 auto 10px auto;border-radius:100px;border:1px solid #333;" [src]="usr.photoURL">
+    <div class="error" style="margin-bottom:14px;">Signed in as {{usr.displayName}}<br>({{usr.email}})</div>
+    <button class="btn" type="button" (click)="logou();$event.stopPropagation()">logout</button>
+  </ng-container>
+  
+  <div class="footer"><strong>Mosh</strong> © <a href="https://lagsoftware.com">Lag Software</a></div><br>
 </div>
-<br><br><br>
-<input class="field" style="margin-bottom:4px;" type="text" placeholder="mybama email" [(ngModel)]="email">
-<input class="field" type="text" placeholder="event code" [(ngModel)]="code"><br>
-<input class="btn" type="button" value="join event" (click)="login(email, code)">
-<br>
-<br>
-<br>
-<div class="or">or</div>
-<br>
-<br>
-<input class="field" type="text" placeholder="mybama email" [(ngModel)]="email1"><br>
-<input class="btn" type="button" value="create event" (click)="create(email1)">
-<br><br><br>
-<div class="error">{{fail}}</div>
-<br><br>
-<div class="footer"><strong>Mosh</strong> © <a href="https://lagsoftware.com">Lag Software</a></div><br>

@@ -1,41 +1,81 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { from } from 'rxjs';
+import { from, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
   fail = '';
+  private subscription: Subscription = new Subscription();
 
-  constructor(private db: AngularFirestore, private router: Router) { }
+  constructor(
+    private db: AngularFirestore,
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
-  login(email: string, code: string) {
-    this.fail = '';
-    if (email.trim().slice(-15) === '@crimson.ua.edu') {
-      from(this.db.collection('events').doc(code).get()).toPromise().then(doc => {
-        if (doc.exists) {
-          this.router.navigate(['queue', code, email.split('@')[0]]);
-        } else {
-          this.fail = 'event not found';
-        }
-      });
-    } else {
-      this.fail = 'email invalid';
-    }
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
-  create(email: string) {
+  joi(code: string) {
     this.fail = '';
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
-    if (email.trim().slice(-15) === '@crimson.ua.edu') {
-      this.db.collection('events').doc(code).set({creator: email.split('@')[0]});
-      this.router.navigate(['queue', code, email.split('@')[0]]);
-    } else {
-      this.fail = 'email invalid';
+
+    if (!code) {
+      this.fail = 'must include event code';
+      return;
     }
+
+    this.subscription.add(this.auth.user$.subscribe(usr => {
+      if (!usr) {
+        this.auth.googleSignin().then(() => {
+          from(this.db.collection('events').doc(code.trim()).get()).toPromise().then(doc => {
+            if (doc.exists) {
+              this.router.navigate(['queue', code.trim()]);
+            } else {
+              this.fail = 'event not found';
+            }
+          });
+        });
+      } else {
+        from(this.db.collection('events').doc(code.trim()).get()).toPromise().then(doc => {
+          if (doc.exists) {
+            this.router.navigate(['queue', code.trim()]);
+          } else {
+            this.fail = 'event not found';
+          }
+        });
+      }
+    }));
+  }
+
+  creat() {
+    this.fail = '';
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    this.subscription.add(this.auth.user$.subscribe(usr => {
+      if (!usr) {
+        this.auth.googleSignin().then(() => {
+          this.subscription.add(this.auth.user$.subscribe(newusr => {
+            this.db.collection('events').doc(code).set({creator: {name: newusr.displayName, email: newusr.email}}).then(() =>
+              this.router.navigate(['queue', code])
+            );
+          }));
+        });
+      } else {
+        this.db.collection('events').doc(code).set({creator: {name: usr.displayName, email: usr.email}}).then(() =>
+          this.router.navigate(['queue', code])
+        );
+      }
+    }));
+  }
+
+  logou() {
+    this.auth.signOut();
   }
 }
