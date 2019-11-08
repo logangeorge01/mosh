@@ -11,12 +11,13 @@ import { AuthService } from '../auth.service';
 })
 export class LoginComponent implements OnDestroy {
   fail = '';
+  code: string;
   private subscription: Subscription = new Subscription();
 
   constructor(
     private db: AngularFirestore,
     private router: Router,
-    private auth: AuthService
+    public auth: AuthService
   ) { }
 
   ngOnDestroy() {
@@ -73,9 +74,5 @@ export class LoginComponent implements OnDestroy {
         );
       }
     }));
-  }
-
-  logou() {
-    this.auth.signOut();
   }
 }

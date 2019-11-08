@@ -1,22 +1,16 @@
 <div>
   <div class="head">
-    <img class="logo" src="favicon.ico"><div class="title">Mosh</div>
-  </div><br><br><br>
+    <img class="logo" src="favicon.ico">
+    <div class="title">Mosh</div>
+  </div>
 
-  <input class="field" type="text" placeholder="event code" [(ngModel)]="code"><br>
-  <button class="btn" type="button" (click)="joi(code);$event.stopPropagation()">join event</button><br><br>
-  
-  <div class="or">or</div><br><br>
+  <div class="btngroup">
+    <input class="field" type="text" placeholder="event code" [(ngModel)]="code">
+    <button class="btn" type="button" (click)="joi(code);$event.stopPropagation()">join event</button>
+  </div>
+  <div class="or">or</div>
+  <button class="btn" style="display:block;margin:0 auto;" type="button" (click)="creat();$event.stopPropagation()">create event</button>
+  <div class="error">{{fail}}</div>
 
-  <button class="btn" type="button" (click)="creat();$event.stopPropagation()">create event</button><br><br><br>
-  
-  <div class="error">{{fail}}</div><br><br><br><br>
-
-  <ng-container *ngIf="(auth.user$ | async) as usr">
-    <img style="width:70px;display:block;margin:0 auto 10px auto;border-radius:100px;border:1px solid #333;" [src]="usr.photoURL">
-    <div class="error" style="margin-bottom:14px;">Signed in as {{usr.displayName}}<br>({{usr.email}})</div>
-    <button class="btn" type="button" (click)="logou();$event.stopPropagation()">logout</button>
-  </ng-container>
-  
-  <div class="footer"><strong>Mosh</strong> © <a href="https://lagsoftware.com">Lag Software</a></div><br>
+  <div class="footer"><strong>Mosh</strong> © <a href="https://lagsoftware.com">Lag Software</a></div>
 </div>

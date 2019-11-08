@@ -7,6 +7,7 @@ import * as firebase from 'firebase/app';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../auth.service';
+import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -29,12 +30,13 @@ export class QueueComponent implements OnInit, OnDestroy {
     email: string
   };
   private subscription: Subscription;
+  searchh: string;
 
   constructor(
     private db: AngularFirestore,
     private router: Router,
     private route: ActivatedRoute,
-    private auth: AuthService
+    public auth: AuthService
   ) { }
 
   ngOnInit() {
