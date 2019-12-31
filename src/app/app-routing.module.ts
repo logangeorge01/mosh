@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { QueueComponent } from './queue/queue.component';
-import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './auth.guard';
+import { HomeComponent } from './home/home.component';
+import { QueueGuard } from './guards/queue.guard';
+import { HostGuard } from './guards/host.guard';
+import { HostComponent } from './host/host.component';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
-  { path: 'queue/:code', component: QueueComponent, canActivate: [AuthGuard] }
+  { path: '', component: HomeComponent },
+  { path: 'queue/:code', component: QueueComponent, canActivate: [QueueGuard] },
+  { path: 'host/:code', component: HostComponent, canActivate: [HostGuard] }
 ];
 
 @NgModule({
