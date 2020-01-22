@@ -1,9 +1,6 @@
 <div class="title" *ngIf="creator">{{'Event '+code+' by '+creator.name}}</div><br><br>
 <div class="btngroup">
   <button class="btn" style="margin-right:25px" type="button" (click)="leav()">leave event</button>
-  <ng-container *ngIf="(auth.user$ | async) as usr">
-    <button *ngIf="usr.email === (creator || {email:''}).email" class="btn" type="button" (click)="cance()">cancel event</button>
-  </ng-container>
 </div>
 <br><br><br>
 
@@ -25,12 +22,27 @@
     </div>
   </ng-container>
 </div>
-<br><br>
+
+<div class="queue">Now Playing</div>
+  <div class="songgroup" *ngIf="(nowPlaying$ | async) as np">
+    <div class="votecontainer">
+      <button class="upvote" type="button">▲</button>
+      <div class="votes">0</div>
+    </div>
+    <img class="art" [src]="np.art">
+    <div class="infocontainer" [title]="np.name+'\n'+np.artist">
+      <div class="name">{{np.name}}</div>
+      <div class="artist">{{np.artist}}</div>
+    </div>
+    <button class="remove" type="button">✕</button>
+    <br><br>
+  </div>
+
 <div class="queue">Queue</div>
 <div class="songgroup" *ngFor="let song of (songs$ | async)">
   <div class="votecontainer">
     <ng-container *ngIf="(auth.user$ | async) as usr">
-      <button class="upvote" *ngIf="!song.votes.includes(usr.email)" type="button" (click)="upvot(song.id)">▲</button>
+      <button class="upvote" *ngIf="!song.votes.includes(usr.email)" type="button" (click)="upvot(song.fireid)">▲</button>
     </ng-container>
     <div class="votes">{{song.numvotes}}</div>
   </div>
@@ -39,9 +51,6 @@
     <div class="name">{{song.name}}</div>
     <div class="artist">{{song.artist}}</div>
   </div>
-  <ng-container *ngIf="(auth.user$ | async) as usr">
-    <button *ngIf="usr.email === (creator || {email:''}).email" class="remove" type="button" (click)="remov(song.id)">✕</button>
-  </ng-container>
   <br><br>
 </div>
 <br><br>

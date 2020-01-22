@@ -8,9 +8,10 @@
     <input class="field" type="text" placeholder="event code" [(ngModel)]="code">
     <button class="btn" type="button" (click)="joi(code);$event.stopPropagation()">join event</button>
   </div>
+  <div class="error">{{fail}}</div>
   <div class="or">or</div>
   <button class="btn" style="display:block;margin:0 auto;" type="button" (click)="creat();$event.stopPropagation()">create event</button>
-  <div class="error">{{fail}}</div>
+  
 
   <div class="footer"><strong>Mosh</strong> © <a href="https://lagsoftware.com">Lag Software</a></div>
 </div>

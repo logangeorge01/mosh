@@ -33,7 +33,7 @@ export class AuthService {
           return of(null);
         }
       })
-    );
+    ) as any;
   }
 
   async googleSignin() {

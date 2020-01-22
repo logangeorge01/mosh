@@ -9,14 +9,17 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { QueueComponent } from './queue/queue.component';
-import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './auth.guard';
+import { HomeComponent } from './home/home.component';
+import { HostComponent } from './host/host.component';
+import { QueueGuard } from './guards/queue.guard';
+import { HostGuard } from './guards/host.guard';
 
 @NgModule({
   declarations: [
     AppComponent,
     QueueComponent,
-    LoginComponent
+    HomeComponent,
+    HostComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +29,7 @@ import { AuthGuard } from './auth.guard';
     AngularFirestoreModule,
     AngularFireAuthModule
   ],
-  providers: [AuthGuard],
+  providers: [QueueGuard, HostGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

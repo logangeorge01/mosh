@@ -2,14 +2,14 @@ import { Component, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { from, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
-export class LoginComponent implements OnDestroy {
+export class HomeComponent implements OnDestroy {
   fail = '';
   code: string;
   private subscription: Subscription = new Subscription();
@@ -37,7 +37,7 @@ export class LoginComponent implements OnDestroy {
         this.auth.googleSignin().then(() => {
           from(this.db.collection('events').doc(code.trim()).get()).toPromise().then(doc => {
             if (doc.exists) {
-              this.router.navigate(['queue', code.trim()]);
+              this.router.navigate(['host', code.trim()]);
             } else {
               this.fail = 'event not found';
             }
@@ -46,7 +46,7 @@ export class LoginComponent implements OnDestroy {
       } else {
         from(this.db.collection('events').doc(code.trim()).get()).toPromise().then(doc => {
           if (doc.exists) {
-            this.router.navigate(['queue', code.trim()]);
+            this.router.navigate(['host', code.trim()]);
           } else {
             this.fail = 'event not found';
           }
@@ -64,13 +64,13 @@ export class LoginComponent implements OnDestroy {
         this.auth.googleSignin().then(() => {
           this.subscription.add(this.auth.user$.subscribe(newusr => {
             this.db.collection('events').doc(code).set({creator: {name: newusr.displayName, email: newusr.email}}).then(() =>
-              this.router.navigate(['queue', code])
+              this.router.navigate(['host', code])
             );
           }));
         });
       } else {
         this.db.collection('events').doc(code).set({creator: {name: usr.displayName, email: usr.email}}).then(() =>
-          this.router.navigate(['queue', code])
+          this.router.navigate(['host', code])
         );
       }
     }));

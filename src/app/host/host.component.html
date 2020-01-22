@@ -1,0 +1,67 @@
+<ng-container *ngIf="(auth.user$ | async) as usr">
+  <div class="title">{{'Host Platform for Event '+code}}</div><br><br>
+  <div class="btngroup">
+    <button class="btn" style="margin-right:25px" type="button" (click)="leav()">leave event</button>
+    <button class="btn" type="button" (click)="cance()">cancel event</button>
+  </div>
+  <br><br><br>
+
+  <button *ngIf="!this.music.isAuthorized" class="btn" type="button" (click)="this.music.authorize()">login to apple music</button>
+  <button *ngIf="this.music.isAuthorized" class="btn" type="button" (click)="this.music.unauthorize()">logout from apple music</button><br><br>
+  <!--<ng-container *ngIf="(songs$ | async) as songs"><button class="btn" type="button" (click)="play(songs)">play</button><br></ng-container>-->
+  <ng-container *ngIf="(songs$ | async) as songs">
+    <button class="btn" type="button" (click)="playpause(songs[0])">{{playstate()}}</button><br><br>
+    <button class="btn" type="button" (click)="skip(songs[0])">⏭️</button><br><br>
+    <!--*ngIf="(songs$ | async).length ? (songs | async).length>0 : false"-->
+  </ng-container>
+
+  <div class="btngroup">
+    <input class="field" type="text" placeholder="a song name" [(ngModel)]="searchh">
+    <button class="btn" type="button" (click)="searc(searchh)">search</button>
+  </div>
+
+  <div class="help">Search for a song, then click or tap to add to queue</div>
+  <br>
+  <div class="suggestgroup">
+    <ng-container *ngFor="let sug of suggests; index as i">
+      <div class="suggest" [title]="sug.name+'\n'+sug.artist" (click)="addd(i)">
+        <img class="sugart" [src]="sug.art">
+        <div class="suginfocontainer">
+          <div class="sugname">{{sug.name}}</div>
+          <div class="sugartist">{{sug.artist}}</div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="queue">Now Playing</div>
+  <div class="songgroup" *ngIf="(nowPlaying$ | async) as np">
+    <div class="votecontainer">
+      <button class="upvote" type="button">▲</button>
+      <div class="votes">0</div>
+    </div>
+    <img class="art" [src]="np.art">
+    <div class="infocontainer" [title]="np.name+'\n'+np.artist">
+      <div class="name">{{np.name}}</div>
+      <div class="artist">{{np.artist}}</div>
+    </div>
+    <button class="remove" type="button">✕</button>
+    <br><br>
+  </div>
+  
+  <div class="queue">Queue</div>
+  <div class="songgroup" *ngFor="let song of (songs$ | async)">
+    <div class="votecontainer">
+      <button class="upvote" *ngIf="!song.votes.includes(usr.email)" type="button" (click)="upvot(song.fireid)">▲</button>
+      <div class="votes">{{song.numvotes}}</div>
+    </div>
+    <img class="art" [src]="song.art">
+    <div class="infocontainer" [title]="song.name+'\n'+song.artist">
+      <div class="name">{{song.name}}</div>
+      <div class="artist">{{song.artist}}</div>
+    </div>
+    <button class="remove" type="button" (click)="remov(song.fireid)">✕</button>
+    <br><br>
+  </div>
+  <br><br>
+</ng-container>
