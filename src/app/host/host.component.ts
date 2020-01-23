@@ -46,8 +46,8 @@ export class HostComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     public auth: AuthService,
-    private music: MusicService,
-    private playerService: PlayerService
+    public music: MusicService,
+    public playerService: PlayerService
   ) {
     this.music.musicKit.addEventListener( MusicKit.Events.playbackStateDidChange, this.playbackStateDidChange.bind(this) );
   }
@@ -176,6 +176,7 @@ export class HostComponent implements OnInit, OnDestroy {
   }
 
   playstate() {
-    return this.playerService.playbackState === 3 || this.playerService.playbackState === 0 ? '▶️' : '⏸';
+    // tslint:disable-next-line: max-line-length
+    return this.playerService.playbackState === 3 || this.playerService.playbackState === 0 ? 'assets/play.png' : 'assets/pause.svg';
   }
 }

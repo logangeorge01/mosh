@@ -1,19 +1,11 @@
 <ng-container *ngIf="(auth.user$ | async) as usr">
   <div class="title">{{'Host Platform for Event '+code}}</div><br><br>
-  <div class="btngroup">
-    <button class="btn" style="margin-right:25px" type="button" (click)="leav()">leave event</button>
-    <button class="btn" type="button" (click)="cance()">cancel event</button>
+  <div class="btngroup" style="margin-bottom:100px">
+    <button class="btn" type="button" (click)="leav()">leave event</button>
+    <button class="btn" style="margin:0 25px" type="button" (click)="cance()">cancel event</button>
+    <button *ngIf="!this.music.isAuthorized" class="btn" type="button" (click)="this.music.authorize()">login to apple music</button>
+    <button *ngIf="this.music.isAuthorized" class="btn" type="button" (click)="this.music.unauthorize()">logout from apple music</button>
   </div>
-  <br><br><br>
-
-  <button *ngIf="!this.music.isAuthorized" class="btn" type="button" (click)="this.music.authorize()">login to apple music</button>
-  <button *ngIf="this.music.isAuthorized" class="btn" type="button" (click)="this.music.unauthorize()">logout from apple music</button><br><br>
-  <!--<ng-container *ngIf="(songs$ | async) as songs"><button class="btn" type="button" (click)="play(songs)">play</button><br></ng-container>-->
-  <ng-container *ngIf="(songs$ | async) as songs">
-    <button class="btn" type="button" (click)="playpause(songs[0])">{{playstate()}}</button><br><br>
-    <button class="btn" type="button" (click)="skip(songs[0])">⏭️</button><br><br>
-    <!--*ngIf="(songs$ | async).length ? (songs | async).length>0 : false"-->
-  </ng-container>
 
   <div class="btngroup">
     <input class="field" type="text" placeholder="a song name" [(ngModel)]="searchh">
@@ -35,18 +27,22 @@
   </div>
 
   <div class="queue">Now Playing</div>
-  <div class="songgroup" *ngIf="(nowPlaying$ | async) as np">
-    <div class="votecontainer">
-      <button class="upvote" type="button">▲</button>
-      <div class="votes">0</div>
-    </div>
+  <div class="songgroup" style="margin-bottom:25px" *ngIf="(nowPlaying$ | async) as np">
+    <div class="votecontainer"></div>
     <img class="art" [src]="np.art">
     <div class="infocontainer" [title]="np.name+'\n'+np.artist">
       <div class="name">{{np.name}}</div>
       <div class="artist">{{np.artist}}</div>
     </div>
-    <button class="remove" type="button">✕</button>
-    <br><br>
+    <!-- <div class="btngroup" *ngIf="(songs$ | async) as songs"></div> -->
+      
+      <!--<button *ngIf="songs.length > 0 || this.playerService.playbackState===3 || this.playerService.playbackState===2" class="btn" style="margin-right:12px" type="button" (click)="playpause(songs[0])">{{playstate()}}</button>-->
+      <!--<button *ngIf="songs.length > 0" class="btn" type="button" (click)="skip(songs[0])">⏭️</button>-->
+      <!--*ngIf="(songs$ | async).length ? (songs | async).length>0 : false"-->
+    <ng-container *ngIf="(songs$ | async) as songs">
+      <img style="height:30px;margin-left:auto;margin-right:15px;align-self:center;" *ngIf="songs.length > 0 || this.playerService.playbackState===3 || this.playerService.playbackState===2" [src]="playstate()" (click)="playpause(songs[0])">
+      <img style="height:30px;margin-right:15px;align-self:center;" *ngIf="songs.length > 0" (click)="skip(songs[0])" src="assets/skip.png">
+    </ng-container>
   </div>
   
   <div class="queue">Queue</div>
