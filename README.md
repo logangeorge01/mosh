@@ -1,3 +1,3 @@
 # Mosh
 
-<a href="lagsoftware.com/mosh">lagsoftware.com/mosh</a>
+<a href="https://lagsoftware.com/mosh">lagsoftware.com/mosh</a>
