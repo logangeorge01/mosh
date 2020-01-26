@@ -12,6 +12,7 @@ import { AuthService } from '../services/auth.service';
 export class HomeComponent implements OnDestroy {
   fail = '';
   code: string;
+  loading = false;
   private subscription: Subscription = new Subscription();
 
   constructor(
@@ -26,6 +27,7 @@ export class HomeComponent implements OnDestroy {
 
   joi(code: string) {
     this.fail = '';
+    this.loading = true;
 
     if (!code) {
       this.fail = 'must include event code';
@@ -39,6 +41,7 @@ export class HomeComponent implements OnDestroy {
             if (doc.exists) {
               this.router.navigate(['host', code.trim()]);
             } else {
+              this.loading = false;
               this.fail = 'event not found';
             }
           });
@@ -48,6 +51,7 @@ export class HomeComponent implements OnDestroy {
           if (doc.exists) {
             this.router.navigate(['host', code.trim()]);
           } else {
+            this.loading = false;
             this.fail = 'event not found';
           }
         });
@@ -57,6 +61,7 @@ export class HomeComponent implements OnDestroy {
 
   creat() {
     this.fail = '';
+    this.loading = true;
     const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     this.subscription.add(this.auth.user$.subscribe(usr => {

@@ -25,17 +25,11 @@
 
 <div class="queue">Now Playing</div>
   <div class="songgroup" *ngIf="(nowPlaying$ | async) as np">
-    <div class="votecontainer">
-      <button class="upvote" type="button">▲</button>
-      <div class="votes">0</div>
-    </div>
-    <img class="art" [src]="np.art">
+    <img style="margin-left:44px" class="art" [src]="np.art">
     <div class="infocontainer" [title]="np.name+'\n'+np.artist">
       <div class="name">{{np.name}}</div>
       <div class="artist">{{np.artist}}</div>
     </div>
-    <button class="remove" type="button">✕</button>
-    <br><br>
   </div>
 
 <div class="queue">Queue</div>
@@ -51,6 +45,5 @@
     <div class="name">{{song.name}}</div>
     <div class="artist">{{song.artist}}</div>
   </div>
-  <br><br>
 </div>
 <br><br>

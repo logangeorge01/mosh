@@ -1,4 +1,8 @@
-<div>
+<div *ngIf="loading" style="display:flex;min-height: 100vh;justify-content:center;align-items: center;">
+  <img src="assets/loading.gif" style="height:200px">
+</div>
+
+<div *ngIf="!loading">
   <div class="head">
     <img class="logo" src="favicon.ico">
     <div class="title">Mosh</div>
