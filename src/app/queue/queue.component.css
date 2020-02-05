@@ -73,6 +73,7 @@ input {
   cursor: pointer;
 }
 .sugart {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   height: 40px;
   width: 40px;
   border-radius: 4px;
@@ -111,6 +112,7 @@ input {
   margin: 0 auto;
 }
 .art {
+  box-shadow: 0 7px 14px rgba(0,0,0,0.3);
   display: inline;
   vertical-align: middle;
   margin-right: 12px;
