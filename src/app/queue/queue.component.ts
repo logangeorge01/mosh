@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -28,6 +28,11 @@ export class QueueComponent implements OnInit, OnDestroy {
   };
   private subscription: Subscription;
   searchh: string;
+
+  @HostListener('document:keydown.enter', ['$event']) onSpaceKeydownHandler(event) {
+    event.preventDefault();
+    this.searc(this.searchh);
+  }
 
   constructor(
     private db: AngularFirestore,

@@ -34,12 +34,10 @@ export class HostComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   searchh: string;
 
-  /*@HostListener('document:keydown.space', ['$event']) onSpaceKeydownHandler(event) {
-    if ( event.srcElement.tagName !== 'INPUT' && event.srcElement.tagName !== 'BUTTON' ) {
-      event.preventDefault();
-      //this.playpause();
-    }
-  }*/
+  @HostListener('document:keydown.enter', ['$event']) onSpaceKeydownHandler(event) {
+    event.preventDefault();
+    this.searc(this.searchh);
+  }
 
   constructor(
     private db: AngularFirestore,
