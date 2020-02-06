@@ -174,7 +174,14 @@ export class HostComponent implements OnInit, OnDestroy {
   }
 
   playstate() {
-    // tslint:disable-next-line: max-line-length
-    return this.playerService.playbackState === 3 || this.playerService.playbackState === 0 ? 'assets/play.png' : 'assets/pause.svg';
+    switch (this.playerService.playbackState) {
+      case (0):
+      case (3):
+        return 'assets/play.png';
+      case (2):
+        return 'assets/pause.svg';
+      default:
+        return 'assets/loading.gif';
+    }
   }
 }

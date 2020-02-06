@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, HostListener } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { from, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -14,6 +14,11 @@ export class HomeComponent implements OnDestroy {
   code: string;
   loading = false;
   private subscription: Subscription = new Subscription();
+
+  @HostListener('document:keydown.enter', ['$event']) onSpaceKeydownHandler(event) {
+    event.preventDefault();
+    this.joi(this.code);
+  }
 
   constructor(
     private db: AngularFirestore,

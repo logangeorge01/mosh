@@ -30,14 +30,14 @@
     <div class="queue">Now Playing</div>
     <div class="songgroup" style="margin-bottom:25px">
       <ng-container *ngIf="(nowPlaying$ | async) as np">
-        <img style="margin-left:44px" class="art" [src]="np.art">
+        <img style="margin-left:15px" class="art" [src]="np.art">
         <div class="infocontainer" [title]="np.name+'\n'+np.artist">
           <div class="name">{{np.name}}</div>
           <div class="artist">{{np.artist}}</div>
         </div>
       </ng-container>
       <ng-container *ngIf="(songs$ | async) as songs">
-        <img style="height:30px;margin-left:auto;margin-right:15px;align-self:center;" *ngIf="songs.length > 0 || this.playerService.playbackState===3 || this.playerService.playbackState===2" [src]="playstate()" (click)="playpause(songs[0])">
+        <img style="height:30px;margin-left:auto;margin-right:15px;align-self:center;" *ngIf="songs.length > 0 || this.playerService.playbackState===3 || this.playerService.playbackState===2 || this.playerService.playbackState===1" [src]="playstate()" (click)="playpause(songs[0])">
         <img style="height:30px;margin-right:15px;align-self:center;" *ngIf="songs.length > 0 && this.playerService.playbackState===2" (click)="skip(songs[0])" src="assets/skip.png">
       </ng-container>
     </div>
