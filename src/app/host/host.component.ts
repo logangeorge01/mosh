@@ -10,8 +10,6 @@ import { PlayerService, PlaybackStates } from '../services/player.service';
 import { NgModel } from '@angular/forms';
 import { SongModel } from '../models/song';
 
-declare var MusicKit: any;
-
 @Component({
   selector: 'app-host',
   templateUrl: './host.component.html',
@@ -20,7 +18,6 @@ declare var MusicKit: any;
 export class HostComponent implements OnInit, OnDestroy {
   title = 'mosh';
   songs$: Observable<SongModel[]>;
-  queue: SongModel[];
   nowPlaying$: Observable<SongModel>;
   suggests: SongModel[];
   token: string;
@@ -34,7 +31,7 @@ export class HostComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   searchh: string;
 
-  @HostListener('document:keydown.enter', ['$event']) onSpaceKeydownHandler(event) {
+  @HostListener('document:keydown.enter', ['$event']) onEnterKeydownHandler(event) {
     event.preventDefault();
     this.searc(this.searchh);
   }
@@ -46,9 +43,7 @@ export class HostComponent implements OnInit, OnDestroy {
     public auth: AuthService,
     public music: MusicService,
     public playerService: PlayerService
-  ) {
-    this.music.musicKit.addEventListener( MusicKit.Events.playbackStateDidChange, this.playbackStateDidChange.bind(this) );
-  }
+  ) { }
 
   ngOnInit() {
     this.code = this.route.snapshot.paramMap.get('code');
@@ -69,6 +64,7 @@ export class HostComponent implements OnInit, OnDestroy {
           const fireid = docS.payload.doc.id;
           return { fireid, ...data } as SongModel;
         });
+        this.playerService.setQueue(songs);
         return songs;
       })
     );
@@ -131,37 +127,22 @@ export class HostComponent implements OnInit, OnDestroy {
     this.db.collection('events').doc(this.code).collection('nowPlaying').doc('np').set(song);
   }
 
-  playbackStateDidChange( event: any ): void {
-    const playbackState = PlaybackStates[ PlaybackStates[event.state] ];
-    if (playbackState === 5) {
-      this.skip(this.queue[0]);
-    }
-  }
-
   playpause(cur: SongModel) {
     if (this.playerService.playbackState === this.playbackStates.PLAYING) {
       this.playerService.pause().subscribe();
     } else if (this.playerService.playbackState === this.playbackStates.PAUSED) {
       this.playerService.play().subscribe();
     } else {
-      this.songs$.subscribe(songs => this.queue = songs);
       this.playerService.setQueueFromItems([cur]).subscribe();
       this.updateNowPlaying(cur);
       this.remov(cur.fireid);
     }
   }
 
-  skip(next: SongModel) {
-    this.playerService.stop().subscribe();
-    this.updateNowPlaying(this.queue[0]);
-    this.remov(this.queue[0].fireid);
-    this.playerService.setQueueFromItems([this.queue[0]]).subscribe();
-  }
-
-  remove() {
-    this.songs$.subscribe(songs => {
-      songs.splice(0, 1);
-    });
+  skip(cur: SongModel) {
+    this.playerService.skipToNextItem();
+    this.updateNowPlaying(cur);
+    this.remov(cur.fireid);
   }
 
   cance() {
