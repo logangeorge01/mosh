@@ -38,7 +38,7 @@
       </ng-container>
       <ng-container *ngIf="(songs$ | async) as songs">
         <img style="height:30px;margin-left:auto;margin-right:15px;align-self:center;" *ngIf="songs.length > 0 || this.playerService.playbackState===3 || this.playerService.playbackState===2 || this.playerService.playbackState===1" [src]="playstate()" (click)="playpause(songs[0])">
-        <img style="height:30px;margin-right:15px;align-self:center;" *ngIf="songs.length > 0 && this.playerService.playbackState===2" (click)="skip(songs[0])" src="assets/skip.png">
+        <img style="height:30px;margin-right:15px;align-self:center;" *ngIf="songs.length > 0" (click)="skip(songs[0])" src="assets/skip.png">
       </ng-container>
     </div>
     
