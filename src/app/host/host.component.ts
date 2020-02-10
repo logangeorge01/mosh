@@ -10,6 +10,8 @@ import { PlayerService, PlaybackStates } from '../services/player.service';
 import { NgModel } from '@angular/forms';
 import { SongModel } from '../models/song';
 
+declare var MusicKit: any;
+
 @Component({
   selector: 'app-host',
   templateUrl: './host.component.html',
@@ -30,6 +32,7 @@ export class HostComponent implements OnInit, OnDestroy {
   public playbackStates = PlaybackStates;
   private subscription: Subscription;
   searchh: string;
+  queue0: SongModel;
 
   @HostListener('document:keydown.enter', ['$event']) onEnterKeydownHandler(event) {
     event.preventDefault();
@@ -43,7 +46,9 @@ export class HostComponent implements OnInit, OnDestroy {
     public auth: AuthService,
     public music: MusicService,
     public playerService: PlayerService
-  ) { }
+  ) {
+    this.music.musicKit.addEventListener( MusicKit.Events.playbackStateDidChange, this.playbackStateDidChange.bind(this) );
+  }
 
   ngOnInit() {
     this.code = this.route.snapshot.paramMap.get('code');
@@ -65,6 +70,9 @@ export class HostComponent implements OnInit, OnDestroy {
           return { fireid, ...data } as SongModel;
         });
         this.playerService.setQueue(songs);
+        if (songs[0]) {
+          this.queue0 = songs[0];
+        }
         return songs;
       })
     );
@@ -72,6 +80,14 @@ export class HostComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  playbackStateDidChange( event: any ): void {
+    const playbackState = PlaybackStates[ PlaybackStates[event.state] ];
+    if (playbackState === 5 && this.queue0) {
+      this.updateNowPlaying(this.queue0);
+      this.remov(this.queue0.fireid);
+    }
   }
 
   searc(search: string) {
@@ -82,6 +98,9 @@ export class HostComponent implements OnInit, OnDestroy {
       Authorization: 'Bearer ' + this.token
     }}).then(res => res.json())
     .then(r => {
+      if (!r.results.songs) {
+        return;
+      }
       this.suggests = r.results.songs.data.map(obj => {
         return {
           id: obj.id,
