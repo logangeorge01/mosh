@@ -120,7 +120,8 @@ export class HostComponent implements OnInit, OnDestroy {
       artist: this.suggests[index].artist,
       votes: [],
       numvotes: 0,
-      time: firebase.firestore.FieldValue.serverTimestamp()
+      time: firebase.firestore.FieldValue.serverTimestamp(),
+      addedby: 'Host'
     });
     delete this.suggests;
   }
@@ -164,9 +165,15 @@ export class HostComponent implements OnInit, OnDestroy {
     this.remov(cur.fireid);
   }
 
-  cance() {
+  cance(uid: string) {
     this.db.collection('events').doc(this.code).delete();
-    this.router.navigate(['']);
+    this.db.collection('hosts').doc(uid).get().toPromise().then(docS => {
+      const events: string[] = docS.data().events;
+      events.splice(events.indexOf(this.code), 1);
+      return events;
+    }).then((events: string[]) => {
+      this.db.collection('hosts').doc(uid).update({events});
+    }).then(() => this.router.navigate(['']));
   }
 
   leav() {

@@ -1,0 +1,19 @@
+<div *ngIf="(auth.user$ | async) as usr">
+  <div class="title" style="margin-bottom:75px">{{'Host Platform for ' + usr.displayName}}</div>
+
+  <button class="btn" style="display:block;margin:0 auto 75px auto;" type="button" (click)="home();$event.stopPropagation()">home</button>
+
+  <ng-container *ngIf="events.length > 0">
+    <div class="title" style="margin-bottom:20px">Events</div>
+    <div class="eventgroup">
+      <ng-container *ngFor="let event of events">
+        <div class="event" (click)="goto(event)">
+          <div class="eventname">{{event}}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="or">or</div>
+  </ng-container>
+  <button class="btn" style="display:block;margin:0 auto;" type="button" (click)="creat();$event.stopPropagation()">create event</button>
+</div>
+

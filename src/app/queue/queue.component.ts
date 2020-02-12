@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subscription, of } from 'rxjs';
+import { map, switchMap, tap, take } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { SongModel } from '../models/song';
   templateUrl: './queue.component.html',
   styleUrls: ['./queue.component.css']
 })
-export class QueueComponent implements OnInit, OnDestroy {
+export class QueueComponent implements OnInit {
   title = 'mosh';
   songs$: Observable<SongModel[]>;
   nowPlaying$: Observable<SongModel>;
@@ -26,12 +26,15 @@ export class QueueComponent implements OnInit, OnDestroy {
     name: string,
     email: string
   };
-  private subscription: Subscription;
   searchh: string;
+  username: string = null;
+  fail = '';
 
   @HostListener('document:keydown.enter', ['$event']) onSpaceKeydownHandler(event) {
     event.preventDefault();
-    this.searc(this.searchh);
+    if (this.username) {
+      this.searc(this.searchh);
+    }
   }
 
   constructor(
@@ -44,7 +47,6 @@ export class QueueComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.code = this.route.snapshot.paramMap.get('code');
-    this.subscription = this.auth.user$.subscribe(usr => this.email = usr.email);
 
     this.db.collection('events').doc(this.code).get().toPromise().then(event => this.creator = event.data().creator);
 
@@ -63,10 +65,25 @@ export class QueueComponent implements OnInit, OnDestroy {
         });
       })
     );
+
+    this.username = localStorage.getItem('username');
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+  uEnter(uname: string) {
+    this.fail = '';
+    const docRef = this.db.collection('events').doc(this.code);
+    docRef.get().toPromise()
+    .then(docS => {
+      const usernames: any[] = docS.data().usernames || [];
+      if (!usernames.includes(uname)) {
+        usernames.push(uname);
+        docRef.update({usernames});
+        localStorage.setItem('username', uname);
+        this.username = uname;
+        return;
+      }
+      this.fail = 'Username taken';
+    });
   }
 
   searc(search: string) {
@@ -96,7 +113,8 @@ export class QueueComponent implements OnInit, OnDestroy {
       artist: this.suggests[index].artist,
       votes: [],
       numvotes: 0,
-      time: firebase.firestore.FieldValue.serverTimestamp()
+      time: firebase.firestore.FieldValue.serverTimestamp(),
+      addedby: this.username
     });
     delete this.suggests;
   }
@@ -107,7 +125,7 @@ export class QueueComponent implements OnInit, OnDestroy {
       const votes: string[] = songS.data().votes;
       if (!votes.includes(this.email)) {
         docref.update({
-          votes: votes.concat([this.email]),
+          votes: votes.concat([this.username]),
           numvotes: firebase.firestore.FieldValue.increment(1)
         });
       }

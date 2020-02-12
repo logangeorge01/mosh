@@ -13,13 +13,16 @@ import { HomeComponent } from './home/home.component';
 import { HostComponent } from './host/host.component';
 import { QueueGuard } from './guards/queue.guard';
 import { HostGuard } from './guards/host.guard';
+import { PlatformGuard } from './guards/platform.guard';
+import { PlatformComponent } from './platform/platform.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     QueueComponent,
     HomeComponent,
-    HostComponent
+    HostComponent,
+    PlatformComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +32,7 @@ import { HostGuard } from './guards/host.guard';
     AngularFirestoreModule,
     AngularFireAuthModule
   ],
-  providers: [QueueGuard, HostGuard],
+  providers: [QueueGuard, HostGuard, PlatformGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

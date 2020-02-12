@@ -39,32 +39,17 @@ export class HomeComponent implements OnDestroy {
       return;
     }
 
-    this.subscription.add(this.auth.user$.subscribe(usr => {
-      if (!usr) {
-        this.auth.googleSignin().then(() => {
-          from(this.db.collection('events').doc(code.trim()).get()).toPromise().then(doc => {
-            if (doc.exists) {
-              this.router.navigate(['host', code.trim()]);
-            } else {
-              this.loading = false;
-              this.fail = 'event not found';
-            }
-          });
-        });
+    from(this.db.collection('events').doc(code.trim()).get()).toPromise().then(doc => {
+      if (doc.exists) {
+        this.router.navigate(['queue', code.trim()]);
       } else {
-        from(this.db.collection('events').doc(code.trim()).get()).toPromise().then(doc => {
-          if (doc.exists) {
-            this.router.navigate(['host', code.trim()]);
-          } else {
-            this.loading = false;
-            this.fail = 'event not found';
-          }
-        });
+        this.loading = false;
+        this.fail = 'event not found';
       }
-    }));
+    });
   }
 
-  creat() {
+  hostLogin() {
     this.fail = '';
     this.loading = true;
     const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -72,16 +57,11 @@ export class HomeComponent implements OnDestroy {
     this.subscription.add(this.auth.user$.subscribe(usr => {
       if (!usr) {
         this.auth.googleSignin().then(() => {
-          this.subscription.add(this.auth.user$.subscribe(newusr => {
-            this.db.collection('events').doc(code).set({creator: {name: newusr.displayName, email: newusr.email}}).then(() =>
-              this.router.navigate(['host', code])
-            );
-          }));
+          this.subscription.add(this.auth.user$.subscribe());
+          this.router.navigate(['platform']);
         });
       } else {
-        this.db.collection('events').doc(code).set({creator: {name: usr.displayName, email: usr.email}}).then(() =>
-          this.router.navigate(['host', code])
-        );
+        this.router.navigate(['platform']);
       }
     }));
   }

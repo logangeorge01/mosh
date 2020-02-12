@@ -15,6 +15,7 @@ export class AuthService {
     email: string;
     photoURL?: string;
     displayName?: string;
+    events: string[];
   }>;
 
   constructor(
@@ -25,13 +26,7 @@ export class AuthService {
     // Get the auth state, then fetch the Firestore user document or return null
     this.user$ = this.afAuth.authState.pipe(
       switchMap(user => {
-          // Logged in
-        if (user) {
-          return this.afs.collection('users').doc(user.uid).valueChanges();
-        } else {
-          // Logged out
-          return of(null);
-        }
+        return user ? this.afs.collection('hosts').doc(user.uid).valueChanges() : of(null);
       })
     ) as any;
   }
@@ -43,14 +38,15 @@ export class AuthService {
   }
 
   private updateUserData(user) {
-    // Sets user data to firestore on login
-    const userRef: AngularFirestoreDocument = this.afs.doc(`users/${user.uid}`);
+    // const userRef: AngularFirestoreDocument = this.afs.doc(`users/${user.uid}`);
+    const userRef: AngularFirestoreDocument = this.afs.doc(`hosts/${user.uid}`);
 
     const data = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
-      photoURL: user.photoURL
+      photoURL: user.photoURL,
+      events: []
     };
 
     return userRef.set(data, { merge: true });

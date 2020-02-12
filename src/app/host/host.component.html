@@ -2,7 +2,7 @@
   <div class="title">{{'Host Platform for Event '+code}}</div><br><br>
   <div class="btngroup" style="margin-bottom:100px">
     <button class="btn" type="button" (click)="leav()">leave event</button>
-    <button class="btn" style="margin:0 25px" type="button" (click)="cance()">cancel event</button>
+    <button class="btn" style="margin:0 25px" type="button" (click)="cance(usr.uid)">cancel event</button>
     <button *ngIf="!this.music.isAuthorized" class="btn" type="button" (click)="this.music.authorize()">login to apple music</button>
     <button *ngIf="this.music.isAuthorized" class="btn" type="button" (click)="this.music.unauthorize()">logout from apple music</button>
   </div>
@@ -13,8 +13,7 @@
       <button class="btn" type="button" (click)="searc(searchh)">search</button>
     </div>
 
-    <div class="help">Search for a song, then click or tap to add to queue</div>
-    <br>
+    <div class="help">Search for a song, then click or tap to add to queue</div><br>
     <div class="suggestgroup">
       <ng-container *ngFor="let sug of suggests; index as i">
         <div class="suggest" [title]="sug.name+'\n'+sug.artist" (click)="addd(i)">
@@ -33,7 +32,7 @@
         <img style="margin-left:15px" class="art" [src]="np.art">
         <div class="infocontainer" [title]="np.name+'\n'+np.artist">
           <div class="name">{{np.name}}</div>
-          <div class="artist">{{np.artist}}</div>
+          <div class="artist">{{np.artist}}<img style="height:16px;vertical-align:middle;margin:0 3px 0 15px" src="assets/avatar.png"><strong>{{np.addedby}}</strong></div>
         </div>
       </ng-container>
       <ng-container *ngIf="(songs$ | async) as songs">
@@ -51,7 +50,7 @@
       <img class="art" [src]="song.art">
       <div class="infocontainer" [title]="song.name+'\n'+song.artist">
         <div class="name">{{song.name}}</div>
-        <div class="artist">{{song.artist}}</div>
+        <div class="artist">{{song.artist}}<img style="height:16px;vertical-align:middle;margin: 0 3px 0 15px" src="assets/avatar.png"><strong>{{song.addedby}}</strong></div>
       </div>
       <button class="remove" type="button" (click)="remov(song.fireid)">✕</button>
       <br><br>
