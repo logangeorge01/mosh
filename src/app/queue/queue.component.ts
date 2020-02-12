@@ -27,6 +27,7 @@ export class QueueComponent implements OnInit {
     email: string
   };
   searchh: string;
+  uname: string;
   username: string = null;
   fail = '';
 

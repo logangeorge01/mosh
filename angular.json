@@ -13,9 +13,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "baseHref": "/mosh/",
-            "deployUrl": "/mosh/",
-            "outputPath": "dist/mosh",
+            "baseHref": "/mosh-test/",
+            "deployUrl": "/mosh-test/",
+            "outputPath": "dist/mosh-test",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
