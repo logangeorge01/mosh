@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Observable, Subscription, of } from 'rxjs';
 import { map, switchMap, tap, take } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -48,7 +48,7 @@ export class QueueComponent implements OnInit {
 
   ngOnInit() {
     this.code = this.route.snapshot.paramMap.get('code');
-
+    this.username = localStorage.getItem('username');
     this.db.collection('events').doc(this.code).get().toPromise().then(event => this.creator = event.data().creator);
 
     this.nowPlaying$ = this.db.collection('events').doc(this.code).collection('nowPlaying').doc('np').snapshotChanges().pipe(
@@ -66,8 +66,6 @@ export class QueueComponent implements OnInit {
         });
       })
     );
-
-    this.username = localStorage.getItem('username');
   }
 
   uEnter(uname: string) {
