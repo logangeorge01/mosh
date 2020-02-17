@@ -35,7 +35,7 @@ export class PlatformComponent implements OnInit {
     const events = this.events.concat([code]);
 
     this.auth.user$.subscribe(usr => {
-      this.db.collection('events').doc(code).set({creator: {name: usr.displayName, email: usr.email}})
+      this.db.collection('events').doc(code).set({creator: {name: usr.displayName, email: usr.email}});
       this.db.collection('hosts').doc(usr.uid).update({events});
       this.router.navigate(['host', code]);
     });
