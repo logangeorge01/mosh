@@ -7,5 +7,5 @@ export class SongModel {
   votes?: string[];
   numvotes?: number;
   time?: string;
-  addedby: string;
+  addedby?: string;
 }

@@ -5,6 +5,7 @@
 <ng-container *ngIf="creator">
   <div class="title">{{'Event '+code+' by '+creator.name}}</div><br><br>
   <div class="btngroup">
+    <button *ngIf="sharingEnabled" class="btn" type="button" (click)="share()">share</button>
     <button class="btn" type="button" (click)="leav()">leave event</button>
   </div>
   <div *ngIf="!this.username" style="margin-top:40px;" class="btngroup">

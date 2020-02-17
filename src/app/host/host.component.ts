@@ -33,6 +33,8 @@ export class HostComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   searchh: string;
   queue0: SongModel;
+  navshare: any;
+  sharingEnabled = false;
 
   @HostListener('document:keydown.enter', ['$event']) onEnterKeydownHandler(event) {
     event.preventDefault();
@@ -53,6 +55,8 @@ export class HostComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.code = this.route.snapshot.paramMap.get('code');
     this.subscription = this.auth.user$.subscribe(usr => this.email = usr.email);
+    this.navshare = window.navigator;
+    this.sharingEnabled = this.navshare && this.navshare.share;
 
     this.db.collection('events').doc(this.code).get().toPromise().then(event => this.creator = event.data().creator);
 
@@ -88,6 +92,15 @@ export class HostComponent implements OnInit, OnDestroy {
       this.updateNowPlaying(this.queue0);
       this.remov(this.queue0.fireid);
     }
+  }
+
+  share() {
+    this.navshare.share({
+      title: `Share Event ${this.code}`,
+      text: `Event ${this.code}`,
+      url: window.location,
+    }).then(() => console.log('Successful share'))
+    .catch((error) => console.log('Error sharing', error));
   }
 
   searc(search: string) {

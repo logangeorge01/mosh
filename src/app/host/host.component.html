@@ -1,13 +1,14 @@
 <ng-container *ngIf="(auth.user$ | async) as usr">
   <div class="title">{{'Host Platform for Event '+code}}</div><br><br>
   <div class="btngroup" style="margin-bottom:100px">
-    <button class="btn" type="button" (click)="leav()">leave event</button>
-    <button class="btn" style="margin:0 25px" type="button" (click)="cance(usr.uid)">cancel event</button>
+    <button *ngIf="sharingEnabled" style="margin-right: 25px" class="btn" type="button" (click)="share()">share</button>
+    <button class="btn" style="margin-right: 25px" type="button" (click)="leav()">leave event</button>
+    <button class="btn" style="margin-right: 25px" type="button" (click)="cance(usr.uid)">cancel event</button>
     <button *ngIf="!this.music.isAuthorized" class="btn" type="button" (click)="this.music.authorize()">login to apple music</button>
     <button *ngIf="this.music.isAuthorized" class="btn" type="button" (click)="this.music.unauthorize()">logout from apple music</button>
   </div>
 
-  <ng-container *ngIf="this.music.isAuthorized">
+  <div *ngIf="this.music.isAuthorized" style="margin-bottom:40px">
     <div class="btngroup">
       <input class="field" type="text" placeholder="a song name" [(ngModel)]="searchh">
       <button class="btn" type="button" (click)="searc(searchh)">search</button>
@@ -36,8 +37,8 @@
         </div>
       </ng-container>
       <ng-container *ngIf="(songs$ | async) as songs">
-        <img style="height:30px;margin-left:auto;margin-right:15px;align-self:center;" *ngIf="songs.length > 0 || this.playerService.playbackState===3 || this.playerService.playbackState===2 || this.playerService.playbackState===1" [src]="playstate()" (click)="playpause(songs[0])">
-        <img style="height:30px;margin-right:15px;align-self:center;" *ngIf="songs.length > 0" (click)="skip(songs[0])" src="assets/skip.png">
+        <img class="play" *ngIf="songs.length > 0 || this.playerService.playbackState===3 || this.playerService.playbackState===2 || this.playerService.playbackState===1" [src]="playstate()" (click)="playpause(songs[0])">
+        <img class="skip" *ngIf="songs.length > 0" (click)="skip(songs[0])" src="assets/skip.png">
       </ng-container>
     </div>
     
@@ -53,8 +54,6 @@
         <div class="artist">{{song.artist}}<img style="height:16px;vertical-align:middle;margin: 0 3px 0 15px" src="assets/avatar.png"><strong>{{song.addedby}}</strong></div>
       </div>
       <button class="remove" type="button" (click)="remov(song.fireid)">✕</button>
-      <br><br>
     </div>
-    <br><br>
-  </ng-container>
+  </div>
 </ng-container>

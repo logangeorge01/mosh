@@ -30,6 +30,8 @@ export class QueueComponent implements OnInit {
   uname: string;
   username: string = null;
   fail = '';
+  navshare: any;
+  sharingEnabled = false;
 
   @HostListener('document:keydown.enter', ['$event']) onSpaceKeydownHandler(event) {
     event.preventDefault();
@@ -51,6 +53,9 @@ export class QueueComponent implements OnInit {
     this.username = localStorage.getItem('username');
     this.db.collection('events').doc(this.code).get().toPromise().then(event => this.creator = event.data().creator);
 
+    this.navshare = window.navigator;
+    this.sharingEnabled = this.navshare && this.navshare.share;
+
     this.nowPlaying$ = this.db.collection('events').doc(this.code).collection('nowPlaying').doc('np').snapshotChanges().pipe(
       map(docS => docS.payload.data() as SongModel)
     );
@@ -66,6 +71,15 @@ export class QueueComponent implements OnInit {
         });
       })
     );
+  }
+
+  share() {
+    this.navshare.share({
+      title: `Share Event ${this.code}`,
+      text: `Event ${this.code}`,
+      url: window.location,
+    }).then(() => console.log('Successful share'))
+    .catch((error) => console.log('Error sharing', error));
   }
 
   uEnter(uname: string) {
