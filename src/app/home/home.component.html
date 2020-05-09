@@ -10,7 +10,7 @@
 
   <div class="btngroup">
     <input class="field" type="text" placeholder="event code" [(ngModel)]="code">
-    <button class="btn" type="button" (click)="joi(code);$event.stopPropagation()">join event</button>
+    <button class="btn" type="button" (click)="joi(code);$event.stopPropagation()" style="border-top-left-radius:0;border-bottom-left-radius:0;">join event</button>
   </div>
   <div class="error">{{fail}}</div>
   <div class="or">or</div>

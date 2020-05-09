@@ -18,7 +18,7 @@
   <ng-container *ngIf="this.username">
     <div class="btngroup">
       <input class="field" type="text" placeholder="a song name" [(ngModel)]="searchh">
-      <button class="btn" type="button" (click)="searc(searchh)">search</button>
+      <button class="btn" type="button" (click)="searc(searchh)" style="border-top-left-radius:0;border-bottom-left-radius:0;">search</button>
     </div>
 
     <div class="help">Search for a song, then click or tap to add to queue</div>
@@ -36,13 +36,13 @@
     </div>
 
     <div class="queue">Now Playing</div>
-      <div class="songgroup" *ngIf="(nowPlaying$ | async) as np">
-        <img style="margin-left:44px" class="art" [src]="np.art">
-        <div class="infocontainer" [title]="np.name+'\n'+np.artist">
-          <div class="name">{{np.name}}</div>
-          <div class="artist">{{np.artist}}<img style="height:16px;vertical-align:middle;margin:0 3px 0 15px" src="assets/avatar.png"><strong>{{np.addedby}}</strong></div>
-        </div>
+    <div class="songgroup" *ngIf="(nowPlaying$ | async) as np">
+      <img style="margin-left:44px" class="art" [src]="np.art">
+      <div class="infocontainer" [title]="np.name+'\n'+np.artist">
+        <div class="name">{{np.name}}</div>
+        <div class="artist">{{np.artist}}<img style="height:16px;vertical-align:middle;margin:0 3px 0 15px;filter:invert();" src="assets/avatar.png"><strong>{{np.addedby}}</strong></div>
       </div>
+    </div>
 
     <div class="queue">Queue</div>
     <div class="songgroup" *ngFor="let song of (songs$ | async)">
@@ -53,7 +53,7 @@
       <img class="art" [src]="song.art ? song.art : '../favicon.ico'">
       <div class="infocontainer" [title]="song.name+'\n'+song.artist">
         <div class="name">{{song.name}}</div>
-        <div class="artist">{{song.artist}}<img style="height:16px;vertical-align:middle;margin: 0 3px 0 15px" src="assets/avatar.png"><strong>{{song.addedby}}</strong></div>
+        <div class="artist">{{song.artist}}<img style="height:16px;vertical-align:middle;margin: 0 3px 0 15px;filter: invert();" src="assets/avatar.png"><strong>{{song.addedby}}</strong></div>
       </div>
     </div>
     <br><br>

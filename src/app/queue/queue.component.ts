@@ -8,6 +8,7 @@ import { AuthService } from '../services/auth.service';
 import { MusicService } from '../services/music.service';
 import { NgModel } from '@angular/forms';
 import { SongModel } from '../models/song';
+const vibrant = require('node-vibrant');
 
 @Component({
   selector: 'app-root',
@@ -57,7 +58,15 @@ export class QueueComponent implements OnInit {
     this.sharingEnabled = this.navshare && this.navshare.share;
 
     this.nowPlaying$ = this.db.collection('events').doc(this.code).collection('nowPlaying').doc('np').snapshotChanges().pipe(
-      map(docS => docS.payload.data() as SongModel)
+      map(docS => {
+        const song = docS.payload.data() as SongModel;
+
+        new vibrant(song.art).getPalette().then(rgb => {
+          window.document.body.style.backgroundColor = `rgb(${rgb.Vibrant.r}, ${rgb.Vibrant.g}, ${rgb.Vibrant.b})`;
+        });
+
+        return docS.payload.data() as SongModel;
+      })
     );
 
     // tslint:disable-next-line: max-line-length

@@ -1,7 +1,5 @@
 <div *ngIf="(auth.user$ | async) as usr">
-  <div class="title" style="margin-bottom:75px">{{'Host Platform for ' + usr.displayName}}</div>
-
-  <button class="btn" style="display:block;margin:0 auto 75px auto;" type="button" (click)="home();$event.stopPropagation()">home</button>
+  <div class="title" style="margin-bottom:75px;font-size:36px;">{{'Host Platform for ' + usr.displayName}}</div>
 
   <ng-container *ngIf="events.length > 0">
     <div class="title" style="margin-bottom:20px">Events</div>
@@ -11,9 +9,12 @@
           <div class="eventname">{{event}}</div>
         </div>
       </ng-container>
+      <div class="event" (click)="creat();$event.stopPropagation()">
+        <div class="eventname">+</div>
+      </div>
     </div>
-    <div class="or">or</div>
   </ng-container>
-  <button class="btn" style="display:block;margin:0 auto 25px auto;" type="button" (click)="creat();$event.stopPropagation()">create event</button>
+  
+  <button class="btn" style="display:block;margin:75px auto 0 auto;" type="button" (click)="home();$event.stopPropagation()">home</button>
 </div>
 

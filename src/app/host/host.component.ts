@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,8 +9,15 @@ import { MusicService } from '../services/music.service';
 import { PlayerService, PlaybackStates } from '../services/player.service';
 import { NgModel } from '@angular/forms';
 import { SongModel } from '../models/song';
+const vibrant = require('node-vibrant');
 
 declare var MusicKit: any;
+
+class Asdf {
+  r: number;
+  g: number;
+  b: number;
+}
 
 @Component({
   selector: 'app-host',
@@ -41,6 +48,10 @@ export class HostComponent implements OnInit, OnDestroy {
     this.searc(this.searchh);
   }
 
+  @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any) {
+    $event.returnValue = true;
+  }
+
   constructor(
     private db: AngularFirestore,
     private router: Router,
@@ -61,7 +72,15 @@ export class HostComponent implements OnInit, OnDestroy {
     this.db.collection('events').doc(this.code).get().toPromise().then(event => this.creator = event.data().creator);
 
     this.nowPlaying$ = this.db.collection('events').doc(this.code).collection('nowPlaying').doc('np').snapshotChanges().pipe(
-      map(docS => docS.payload.data() as SongModel)
+      map(docS => {
+        const song = docS.payload.data() as SongModel;
+
+        new vibrant(song.art).getPalette().then(rgb => {
+          window.document.body.style.backgroundColor = `rgb(${rgb.Vibrant.r}, ${rgb.Vibrant.g}, ${rgb.Vibrant.b})`;
+        });
+
+        return docS.payload.data() as SongModel;
+      })
     );
 
     // tslint:disable-next-line: max-line-length
