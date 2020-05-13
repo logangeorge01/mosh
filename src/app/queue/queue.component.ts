@@ -62,7 +62,10 @@ export class QueueComponent implements OnInit {
         const song = docS.payload.data() as SongModel;
 
         new vibrant(song.art).getPalette().then(rgb => {
-          window.document.body.style.backgroundColor = `rgb(${rgb.Vibrant.r}, ${rgb.Vibrant.g}, ${rgb.Vibrant.b})`;
+         const g = `linear-gradient(315deg, rgb(${rgb.Vibrant.r}, ${rgb.Vibrant.g}, ${rgb.Vibrant.b}), rgb(${rgb.Muted.r}, ${rgb.Muted.g}, ${rgb.Muted.b}))`;
+         
+         // window.document.body.style.backgroundColor = `rgb(${rgb.Vibrant.r}, ${rgb.Vibrant.g}, ${rgb.Vibrant.b})`;
+          window.document.body.style.background = g;
         });
 
         return docS.payload.data() as SongModel;
