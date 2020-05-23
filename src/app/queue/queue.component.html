@@ -10,7 +10,7 @@
   </div>
   <div *ngIf="!this.username" style="margin-top:40px;" class="btngroup">
     <input class="field" type="text" placeholder="enter a username" [(ngModel)]="uname">
-    <button class="btn" type="button" (click)="uEnter(uname)">go</button>
+    <button class="btn" type="button" (click)="uEnter(uname)" style="border-top-left-radius:0;border-bottom-left-radius:0;">go</button>
   </div>
   <div class="error">{{fail}}</div>
   <br><br><br>
@@ -37,7 +37,7 @@
 
     <div class="queue">Now Playing</div>
     <div class="songgroup" *ngIf="(nowPlaying$ | async) as np">
-      <img style="margin-left:44px" class="art" [src]="np.art">
+      <img style="margin-left:15px" class="art" [src]="np.art">
       <div class="infocontainer" [title]="np.name+'\n'+np.artist">
         <div class="name">{{np.name}}</div>
         <div class="artist">{{np.artist}}<img style="height:16px;vertical-align:middle;margin:0 3px 0 15px;filter:invert();" src="assets/avatar.png"><strong>{{np.addedby}}</strong></div>
